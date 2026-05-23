@@ -1,0 +1,125 @@
+# OcuSight AI: Retinal Pathology Diagnostics & Scan Registry Suite
+
+OcuSight AI is a premium clinical informatics web application designed to classify retinal fundus photographs into 8 diagnostic categories using a custom **ResNet-50 deep learning model** (trained on the ODIR-5K dataset). 
+
+The application features an automated, real-time image quality evaluation engine (detecting exposure issues, improper focus/blurriness, or incorrect non-fundus uploads), bi-directional encyclopedia lookup synchronization, and a persistent SQLite database scan registry to maintain patient logs and diagnostic metrics.
+
+---
+
+## 🚀 Key Features
+
+* **ResNet-50 Deep Learning Model**: Accurately classifies eye fundus scans into 8 classes:
+  1. **Normal Retina**
+  2. **Diabetic Retinopathy**
+  3. **Glaucoma**
+  4. **Cataract**
+  5. **Myopia**
+  6. **Hypertensive Retinopathy**
+  7. **Age-related Macular Degeneration (AMD)**
+  8. **Other Retinal Anomalies**
+* **Automated Image Quality & Correctness Guardrails**:
+  - **Critical Warning (Incorrect Scans)**: Detects whether the uploaded file represents a typical reddish-orange retinal fundus scan profile. Triggers a prominent red alert warning the clinician if incorrect files (e.g., non-ophthalmic photos) are uploaded.
+  - **Quality Warning (Blurry Scans)**: Utilizes Laplacian variance testing to detect out-of-focus or blurry images that might compromise diagnostic accuracy.
+  - **Exposure Check**: Identifies overexposed (washed out) or underexposed (too dark) fundus photos.
+* **Bi-directional Encyclopedia Sync**: Automatically switches the **Retinal Pathology Database** encyclopedia panel to highlight the classified disease, instantly providing symptoms, clinical advice, and guidelines.
+* **Persistent SQLite Scan Registry**: Automatically saves patient records locally in a SQLite database. Includes a premium interactive table in the UI where clinicians can search logs, filter records by class or quality warning status, track counts (Total, Pathologies, Flagged Warnings), and manage/clear records.
+
+---
+
+## 🛠️ Technology Stack
+
+### Backend API & Deep Learning
+- **Framework**: FastAPI (Python)
+- **Deep Learning**: PyTorch, Torchvision, TIMM (PyTorch Image Models)
+- **Image Processing**: OpenCV (Headless), Pillow (PIL), NumPy
+- **Database**: SQLite3 (Persistent logging)
+- **Server**: Uvicorn
+
+### Frontend SPA
+- **Framework**: React 19 + Vite 8
+- **Styling**: Tailwind CSS v4 (Glassmorphism & animations)
+- **Icons**: Lucide React
+
+---
+
+## 📁 Project Architecture
+
+```
+Retina-Classification/
+├── backend/
+│   ├── database.py         # SQLite CRUD operations
+│   ├── main.py             # FastAPI App, CORS, & Endpoint Routes
+│   ├── model.py            # PyTorch Model Loading & Image Quality Check
+│   ├── requirements.txt    # Python dependencies
+│   ├── test_predict.py     # CPU inference testing script
+│   └── retinal_pathology.db # Persistent SQLite database file
+├── frontend/
+│   ├── src/
+│   │   ├── App.jsx         # Main layout, state management, SQLite table
+│   │   ├── App.css         # Custom animations and classes
+│   │   ├── index.css       # Tailwind imports & Glassmorphism classes
+│   │   └── components/
+│   │       ├── DiseaseInfo.jsx # Encyclopedia catalog component
+│   │       ├── ResultCard.jsx  # Prediction output & quality warning component
+│   │       └── UploadCard.jsx  # Drag-and-drop & URL input card
+│   ├── package.json        # Frontend Node dependencies
+│   └── vite.config.js      # Vite build configurations
+├── best_model.pth          # ResNet-50 trained weights (94MB)
+└── README.md               # Main project documentation
+```
+
+---
+
+## ⚙️ Installation & Local Setup
+
+Ensure you have **Python 3.8+** and **Node.js 16+** installed on your local machine.
+
+### 1. Clone the Repository
+```bash
+git clone https://github.com/BudatiGayathri30/Retina-Classification.git
+cd Retina-Classification
+```
+
+### 2. Backend Setup
+1. Navigate to the `backend` directory:
+   ```bash
+   cd backend
+   ```
+2. Install the Python dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
+3. Start the FastAPI server using Uvicorn:
+   ```bash
+   python main.py
+   ```
+   *The backend server will start on [http://localhost:8000](http://localhost:8000).*
+
+### 3. Frontend Setup
+1. Open a new terminal and navigate to the `frontend` directory:
+   ```bash
+   cd ../frontend
+   ```
+2. Install Node packages:
+   ```bash
+   npm install
+   ```
+3. Start the Vite developer server:
+   ```bash
+   npm run dev
+   ```
+   *The client interface will open on [http://localhost:5173](http://localhost:5173).*
+
+---
+
+## 🧪 Testing the Pipeline
+To run a fast CPU-only model loading and inference test, run:
+```bash
+cd backend
+python test_predict.py
+```
+
+---
+
+## ⚠️ Clinical Disclaimer
+This application is a deep learning demonstration trained on a subset of the ODIR dataset. The classification predictions, warnings, and guidelines generated by OcuSight AI are for educational and exploratory purposes only and **do not** constitute medical diagnoses or advice. Always consult a qualified ophthalmologist or medical specialist for patient care.

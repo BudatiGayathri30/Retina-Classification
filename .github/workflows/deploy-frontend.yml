@@ -1,0 +1,48 @@
+name: Deploy Frontend to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'frontend/**'
+      - '.github/workflows/deploy-frontend.yml'
+
+# Allow the action to write contents (for creating the gh-pages branch)
+permissions:
+  contents: write
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'npm'
+          cache-dependency-path: './frontend/package-lock.json'
+
+      - name: Install Dependencies
+        run: |
+          cd frontend
+          npm install --legacy-peer-deps
+
+      - name: Build Project
+        run: |
+          cd frontend
+          npm run build
+        env:
+          # If they host their backend (e.g. Render, Hugging Face), they can set VITE_API_URL:
+          # VITE_API_URL: https://your-hosted-backend-api.com
+          VITE_API_URL: ""
+
+      - name: Deploy to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: frontend/dist
+          branch: gh-pages

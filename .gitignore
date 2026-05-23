@@ -1,0 +1,25 @@
+# Python cache
+**/__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Python virtual environment
+.venv/
+venv/
+ENV/
+
+# Local databases
+backend/*.db
+backend/*.db-journal
+
+# Node dependencies & builds
+node_modules/
+dist/
+.eslintcache
+
+# Local IDEs / System
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
